@@ -1,12 +1,12 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import {
-  FileStats,
-  FileOperationResult,
-  DirectoryContent,
+import type {
   CopyOptions,
-  WriteOptions,
+  DirectoryContent,
+  FileOperationResult,
+  FileStats,
   ReadOptions,
+  WriteOptions,
 } from '../types/fileSystem';
 
 export class FileSystemService {
@@ -15,7 +15,7 @@ export class FileSystemService {
    */
   public async readFile(
     filePath: string,
-    options: ReadOptions = {}
+    options: ReadOptions = {},
   ): Promise<FileOperationResult<string | Buffer>> {
     try {
       const content = await fs.readFile(path.resolve(filePath), options);
@@ -31,7 +31,7 @@ export class FileSystemService {
   public async writeFile(
     filePath: string,
     content: string | Buffer,
-    options: WriteOptions = {}
+    options: WriteOptions = {},
   ): Promise<FileOperationResult> {
     try {
       await fs.writeFile(path.resolve(filePath), content, options);
@@ -48,12 +48,12 @@ export class FileSystemService {
     try {
       const absolutePath = path.resolve(dirPath);
       const entries = await fs.readdir(absolutePath, { withFileTypes: true });
-      
+
       const contents = await Promise.all(
         entries.map(async (entry) => {
           const entryPath = path.join(absolutePath, entry.name);
           const stats = await this.getStats(entryPath);
-          
+
           if (!stats.success || !stats.data) {
             throw new Error(`Failed to get stats for ${entryPath}`);
           }
@@ -66,7 +66,7 @@ export class FileSystemService {
             type: entryType,
             stats: stats.data,
           };
-        })
+        }),
       );
 
       return { success: true, data: contents };
@@ -106,14 +106,10 @@ export class FileSystemService {
   public async copy(
     sourcePath: string,
     destinationPath: string,
-    options: CopyOptions = {}
+    options: CopyOptions = {},
   ): Promise<FileOperationResult> {
     try {
-      await fs.copy(
-        path.resolve(sourcePath),
-        path.resolve(destinationPath),
-        options
-      );
+      await fs.copy(path.resolve(sourcePath), path.resolve(destinationPath), options);
       return { success: true };
     } catch (error) {
       return { success: false, error: error as Error };
@@ -126,14 +122,10 @@ export class FileSystemService {
   public async move(
     sourcePath: string,
     destinationPath: string,
-    options: CopyOptions = {}
+    options: CopyOptions = {},
   ): Promise<FileOperationResult> {
     try {
-      await fs.move(
-        path.resolve(sourcePath),
-        path.resolve(destinationPath),
-        options
-      );
+      await fs.move(path.resolve(sourcePath), path.resolve(destinationPath), options);
       return { success: true };
     } catch (error) {
       return { success: false, error: error as Error };
@@ -146,7 +138,7 @@ export class FileSystemService {
   public async getStats(targetPath: string): Promise<FileOperationResult<FileStats>> {
     try {
       const stats = await fs.stat(path.resolve(targetPath));
-      
+
       const fileStats: FileStats = {
         size: stats.size,
         created: stats.birthtime,
