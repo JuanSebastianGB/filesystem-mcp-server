@@ -58,10 +58,12 @@ export class FileSystemService {
             throw new Error(`Failed to get stats for ${entryPath}`);
           }
 
+          const entryType: 'file' | 'directory' = entry.isDirectory() ? 'directory' : 'file';
+
           return {
             name: entry.name,
             path: entryPath,
-            type: entry.isDirectory() ? 'directory' : 'file',
+            type: entryType,
             stats: stats.data,
           };
         })

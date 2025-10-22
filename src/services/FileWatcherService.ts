@@ -74,7 +74,7 @@ export class FileWatcherService extends EventEmitter {
       .on('unlink', eventHandler('unlink'))
       .on('addDir', eventHandler('addDir'))
       .on('unlinkDir', eventHandler('unlinkDir'))
-      .on('error', (error) => this.emit('error', error));
+  .on('error', (err: unknown) => this.emit('error', err instanceof Error ? err : new Error(String(err))));
 
     // Store the watcher
     this.watchers.set(absolutePath, watcher);
