@@ -22,12 +22,14 @@ export interface WatchOptions {
   /** Whether to follow symlinks (default: true) */
   followSymlinks?: boolean;
   /** Maximum delay in milliseconds before emitting events (default: 50) */
-  awaitWriteFinish?: boolean | { 
-    /** Delay in milliseconds (default: 2000) */
-    stabilityThreshold?: number;
-    /** Time to wait before starting stability timer (default: 100) */
-    pollInterval?: number;
-  };
+  awaitWriteFinish?:
+    | boolean
+    | {
+        /** Delay in milliseconds (default: 2000) */
+        stabilityThreshold?: number;
+        /** Time to wait before starting stability timer (default: 100) */
+        pollInterval?: number;
+      };
 }
 
 export interface WatchHandle {

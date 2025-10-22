@@ -1,7 +1,7 @@
-import * as path from "path";
-import { FileSystemService } from "./services/FileSystemService";
-import { FileWatcherService } from "./services/FileWatcherService";
-import { FileChangeEvent } from "./types/fileWatcher";
+import * as path from 'path';
+import { FileSystemService } from './services/FileSystemService';
+import { FileWatcherService } from './services/FileWatcherService';
+import type { FileChangeEvent } from './types/fileWatcher';
 
 const fileSystem = new FileSystemService();
 const fileWatcher = new FileWatcherService();
@@ -9,11 +9,11 @@ const fileWatcher = new FileWatcherService();
 // Example usage
 async function main() {
   try {
-    const testDir = "./test-dir";
+    const testDir = './test-dir';
 
     // Set up file watcher
-    fileWatcher.on("change", (event: FileChangeEvent) => {
-      console.log("File system event:", event);
+    fileWatcher.on('change', (event: FileChangeEvent) => {
+      console.log('File system event:', event);
     });
 
     // Create test directory
@@ -30,33 +30,27 @@ async function main() {
     // Perform some file operations to trigger events
     setTimeout(async () => {
       // Create a file
-      await fileSystem.writeFile(
-        path.join(testDir, "test.txt"),
-        "Hello, File System!"
-      );
+      await fileSystem.writeFile(path.join(testDir, 'test.txt'), 'Hello, File System!');
 
       // Modify the file
       setTimeout(async () => {
-        await fileSystem.writeFile(
-          path.join(testDir, "test.txt"),
-          "Updated content!"
-        );
+        await fileSystem.writeFile(path.join(testDir, 'test.txt'), 'Updated content!');
 
         // Create a subdirectory
         setTimeout(async () => {
-          await fileSystem.createDirectory(path.join(testDir, "subdir"));
+          await fileSystem.createDirectory(path.join(testDir, 'subdir'));
 
           // Clean up after 2 seconds
           setTimeout(async () => {
             await watchHandle.close();
             await fileSystem.delete(testDir, true);
-            console.log("Cleanup complete");
+            console.log('Cleanup complete');
           }, 2000);
         }, 1000);
       }, 1000);
     }, 1000);
   } catch (error) {
-    console.error("Error in main:", error);
+    console.error('Error in main:', error);
   }
 }
 

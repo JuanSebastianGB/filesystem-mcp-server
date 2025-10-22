@@ -1,11 +1,11 @@
 import * as chokidar from 'chokidar';
-import * as path from 'path';
 import { EventEmitter } from 'events';
-import {
+import * as path from 'path';
+import type {
   FileChangeEvent,
   FileChangeEventType,
-  WatchOptions,
   WatchHandle,
+  WatchOptions,
 } from '../types/fileWatcher';
 
 export class FileWatcherService extends EventEmitter {
@@ -31,12 +31,9 @@ export class FileWatcherService extends EventEmitter {
    * @param options Watch options
    * @returns A handle to control the watch
    */
-  public async watch(
-    targetPath: string,
-    options: WatchOptions = {}
-  ): Promise<WatchHandle> {
+  public async watch(targetPath: string, options: WatchOptions = {}): Promise<WatchHandle> {
     const absolutePath = path.resolve(targetPath);
-    
+
     // Don't create duplicate watchers
     if (this.watchers.has(absolutePath)) {
       throw new Error(`Already watching path: ${absolutePath}`);
@@ -58,11 +55,13 @@ export class FileWatcherService extends EventEmitter {
       const event: FileChangeEvent = {
         type,
         path: filePath,
-        stats: stats ? {
-          size: stats.size,
-          mtime: stats.mtime,
-          ctime: stats.ctime,
-        } : undefined,
+        stats: stats
+          ? {
+              size: stats.size,
+              mtime: stats.mtime,
+              ctime: stats.ctime,
+            }
+          : undefined,
       };
       this.emit('change', event);
     };
@@ -74,7 +73,9 @@ export class FileWatcherService extends EventEmitter {
       .on('unlink', eventHandler('unlink'))
       .on('addDir', eventHandler('addDir'))
       .on('unlinkDir', eventHandler('unlinkDir'))
-  .on('error', (err: unknown) => this.emit('error', err instanceof Error ? err : new Error(String(err))));
+      .on('error', (err: unknown) =>
+        this.emit('error', err instanceof Error ? err : new Error(String(err))),
+      );
 
     // Store the watcher
     this.watchers.set(absolutePath, watcher);
@@ -101,7 +102,7 @@ export class FileWatcherService extends EventEmitter {
   public async unwatch(targetPath: string): Promise<void> {
     const absolutePath = path.resolve(targetPath);
     const watcher = this.watchers.get(absolutePath);
-    
+
     if (watcher) {
       await watcher.close();
       this.watchers.delete(absolutePath);
@@ -112,9 +113,7 @@ export class FileWatcherService extends EventEmitter {
    * Stop all file watchers
    */
   public async unwatchAll(): Promise<void> {
-    const closePromises = Array.from(this.watchers.values()).map((watcher) =>
-      watcher.close()
-    );
+    const closePromises = Array.from(this.watchers.values()).map((watcher) => watcher.close());
     await Promise.all(closePromises);
     this.watchers.clear();
   }
