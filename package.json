@@ -1,0 +1,20 @@
+{
+  "name": "filesystem-mcp-server",
+  "version": "1.0.0",
+  "description": "A Model Context Protocol server that interacts with the file system, providing file operations and system information.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.9.1",
+    "fs-extra": "^11.3.2",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
